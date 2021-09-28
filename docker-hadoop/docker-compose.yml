@@ -22,6 +22,8 @@ services:
       - CLUSTER_NAME=test
     env_file:
       - ./hadoop.env
+    volumes:
+      - ./data:/mnt/data
 
   datanode1:
     <<: *datanode-common

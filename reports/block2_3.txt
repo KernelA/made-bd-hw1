@@ -1,0 +1,77 @@
+# time hdfs dfs -setrep -w 1 /data/hdfs-default.xml
+Replication 1 set: /data/hdfs-default.xml
+Waiting for /data/hdfs-default.xml ...
+WARNING: the waiting time may be long for DECREASING the number of replications.
+.. done
+
+real    0m21.692s
+user    0m2.486s
+sys     0m0.193s
+# time hdfs dfs -setrep -w 3 /data/hdfs-default.xml
+Replication 3 set: /data/hdfs-default.xml
+Waiting for /data/hdfs-default.xml .... done
+
+real    0m11.617s
+user    0m2.352s
+sys     0m0.146s
+
+# hdfs fsck /data/hdfs-default.xml -files -locations -blocks
+Connecting to namenode via http://namenode:9870/fsck?ugi=root&files=1&locations=1&blocks=1&path=%2Fdata%2Fhdfs-default.xml
+FSCK started by root (auth:SIMPLE) from /172.22.0.8 for path /data/hdfs-default.xml at Tue Sep 28 23:04:48 UTC 2021
+/data/hdfs-default.xml 217305 bytes, replicated: replication=3, 1 block(s):  OK
+0. BP-1264468908-172.22.0.8-1632870103842:blk_1073741830_1006 len=217305 Live_repl=3  [DatanodeInfoWithStorage[172.22.0.6:9866,DS-53f84253-db27-4e5a-81eb-c79f9efe8d48,DISK], DatanodeInfoWithStorage[172.22.0.4:9866,DS-11c63c73-1601-41a4-a42d-f7e0650e6db1,DISK], DatanodeInfoWithStorage[172.22.0.3:9866,DS-d6c40fa1-6afe-49f8-aa73-dbb718556bdf,DISK]]
+
+
+Status: HEALTHY
+ Number of data-nodes:  3
+ Number of racks:               1
+ Total dirs:                    0
+ Total symlinks:                0
+
+Replicated Blocks:
+ Total size:    217305 B
+ Total files:   1
+ Total blocks (validated):      1 (avg. block size 217305 B)
+ Minimally replicated blocks:   1 (100.0 %)
+ Over-replicated blocks:        0 (0.0 %)
+ Under-replicated blocks:       0 (0.0 %)
+ Mis-replicated blocks:         0 (0.0 %)
+ Default replication factor:    3
+ Average block replication:     3.0
+ Missing blocks:                0
+ Corrupt blocks:                0
+ Missing replicas:              0 (0.0 %)
+
+Erasure Coded Block Groups:
+ Total size:    0 B
+ Total files:   0
+ Total block groups (validated):        0
+ Minimally erasure-coded block groups:  0
+ Over-erasure-coded block groups:       0
+ Under-erasure-coded block groups:      0
+ Unsatisfactory placement block groups: 0
+ Average block group size:      0.0
+ Missing block groups:          0
+ Corrupt block groups:          0
+ Missing internal blocks:       0
+FSCK ended at Tue Sep 28 23:04:48 UTC 2021 in 5 milliseconds
+
+
+The filesystem under path '/data/hdfs-default.xml' is HEALTHY
+
+# hdfs fsck -blockId blk_1073741830
+Connecting to namenode via http://namenode:9870/fsck?ugi=root&blockId=blk_1073741830+&path=%2F
+FSCK started by root (auth:SIMPLE) from /172.22.0.8 at Tue Sep 28 23:05:34 UTC 2021
+
+Block Id: blk_1073741830
+Block belongs to: /data/hdfs-default.xml
+No. of Expected Replica: 3
+No. of live Replica: 3
+No. of excess Replica: 0
+No. of stale Replica: 0
+No. of decommissioned Replica: 0
+No. of decommissioning Replica: 0
+No. of corrupted Replica: 0
+Block replica on datanode/rack: 7490115438f8/default-rack is HEALTHY
+Block replica on datanode/rack: cc7fc0dfc932/default-rack is HEALTHY
+Block replica on datanode/rack: 3d384d4bfb82/default-rack is HEALTHY
