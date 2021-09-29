@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
 
 x-data-node-common: &datanode-common
   image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
@@ -51,6 +51,15 @@ services:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 datanode3:9864"
     env_file:
       - ./hadoop.env
+    depends_on:
+      namenode:
+        condition: service_started
+      datanode1:
+        condition: service_started
+      datanode2:
+        condition: service_started
+      datanode3:
+        condition: service_started
     ports:
       - '8088:8088'
 
@@ -60,6 +69,17 @@ services:
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 datanode3:9864 resourcemanager:8088"
+    depends_on:
+      namenode:
+        condition: service_started
+      datanode1:
+        condition: service_started
+      datanode2:
+        condition: service_started
+      datanode3:
+        condition: service_started
+      resourcemanager:
+        condition: service_started
     env_file:
       - ./hadoop.env
   
@@ -69,6 +89,17 @@ services:
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 datanode3:9864 resourcemanager:8088"
+    depends_on:
+      namenode:
+        condition: service_started
+      datanode1:
+        condition: service_started
+      datanode2:
+        condition: service_started
+      datanode3:
+        condition: service_started
+      resourcemanager:
+        condition: service_started
     volumes:
       - hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
