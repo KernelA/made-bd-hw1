@@ -17,3 +17,34 @@
 [Изменение фактора репликации и получение информации по блокам](reports/block2_3.txt)
 
 Время на уменьшение числа реплик было затрачено больше чем на увеличение.
+
+# Блок 3
+
+Результаты вычисления [хранятся в computed_stat.txt](output/computed_stat.txt)
+
+[Стандартная реализация](scripts/standard_stat.py)
+
+MapReduce:
+* [Map](scripts/mapper.py)
+* [Reduce](scripts/reducer.py)
+
+## Как запустить
+
+```
+docker-compose up --build
+```
+
+Зайти в контейнер после запуска:
+```
+docker exec -it namednode bash
+```
+
+Выполнить для добавления файла в HDFS:
+```bash
+bash /mnt/input/put_hdfs.sh
+```
+
+Выполнить для запуска вычислений двумя способами:
+```bash
+bash /mnt/scripts/run_stream.sh
+```
