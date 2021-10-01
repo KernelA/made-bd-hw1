@@ -1,4 +1,4 @@
-version: "3"
+version: "3.5"
 
 x-data-node-common: &datanode-common
   image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
@@ -6,11 +6,12 @@ x-data-node-common: &datanode-common
   environment:
     SERVICE_PRECONDITION: "namenode:9870"
   env_file:
-    - ./hadoop.env
+    - ./docker-hadoop/hadoop.env
 
 services:
   namenode:
-    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    build:
+      context: ./docker-hadoop/namenode
     container_name: namenode
     restart: always
     ports:
@@ -21,25 +22,38 @@ services:
     environment:
       - CLUSTER_NAME=test
     env_file:
-      - ./hadoop.env
+      - ./docker-hadoop/hadoop.env
+    volumes:
+      - ./input:/mnt/input
+      - ./output:/mnt/output
+      - ./scripts:/mnt/scripts
 
   datanode1:
     <<: *datanode-common
     container_name: datanode1
     volumes:
       - hadoop_datanode1:/hadoop/dfs/data
-
+    depends_on:
+      namenode:
+        condition: service_healthy
+      
   datanode2: 
     <<: *datanode-common
     container_name: datanode2
     volumes:
       - hadoop_datanode2:/hadoop/dfs/data
+    depends_on:
+      namenode:
+        condition: service_healthy
 
   datanode3:
     <<: *datanode-common
     container_name: datanode3
     volumes:
       - hadoop_datanode3:/hadoop/dfs/data
+    depends_on:
+      namenode:
+        condition: service_healthy
   
   resourcemanager:
     image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
@@ -48,16 +62,40 @@ services:
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 datanode3:9864"
     env_file:
-      - ./hadoop.env
+      - ./docker-hadoop/hadoop.env
+    depends_on:
+      namenode:
+        condition: service_started
+      datanode1:
+        condition: service_started
+      datanode2:
+        condition: service_started
+      datanode3:
+        condition: service_started
+    ports:
+      - '8088:8088'
 
   nodemanager:
     image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    build:
+      context: ./docker-hadoop/nodemanager
     container_name: nodemanager
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 datanode3:9864 resourcemanager:8088"
+    depends_on:
+      namenode:
+        condition: service_started
+      datanode1:
+        condition: service_started
+      datanode2:
+        condition: service_started
+      datanode3:
+        condition: service_started
+      resourcemanager:
+        condition: service_started
     env_file:
-      - ./hadoop.env
+      - ./docker-hadoop/hadoop.env
   
   historyserver:
     image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
@@ -65,10 +103,21 @@ services:
     restart: always
     environment:
       SERVICE_PRECONDITION: "namenode:9000 namenode:9870 datanode1:9864 datanode2:9864 datanode3:9864 resourcemanager:8088"
+    depends_on:
+      namenode:
+        condition: service_started
+      datanode1:
+        condition: service_started
+      datanode2:
+        condition: service_started
+      datanode3:
+        condition: service_started
+      resourcemanager:
+        condition: service_started
     volumes:
       - hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
-      - ./hadoop.env
+      - ./docker-hadoop/hadoop.env
   
 volumes:
   hadoop_namenode:

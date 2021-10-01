@@ -1,0 +1,17 @@
+Script started on Tue Sep 28 21:25:26 2021
+# hdfs dfs -mkdir /test
+# hdfs dfs -mkdir /test/inner
+# hdfs dfs -ls /test
+Found 1 items
+drwxr-xr-x   - root supergroup          0 2021-09-28 21:25 /test/inner
+# hdfs dfs -touchz /test/inner/file.txt
+# hdfs dfs -ls /test/inner
+Found 1 items
+-rw-r--r--   3 root supergroup          0 2021-09-28 21:26 /test/inner/file.txt
+# hdfs dfs -rm /test/inner/file.txt
+Deleted /test/inner/file.txt
+# hdfs dfs -rm -r /test
+Deleted /test
+# exit
+
+Script done on Tue Sep 28 21:29:17 2021

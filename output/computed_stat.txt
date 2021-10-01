@@ -1,0 +1,2 @@
+Standard computation.     mean:  152.7206871868289  variance: 57672.84569843359 
+MapReduce computation.    mean:  152.72068718682894 variance: 57672.84569843359 	
